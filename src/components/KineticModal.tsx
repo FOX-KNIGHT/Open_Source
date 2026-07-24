@@ -7,6 +7,9 @@ import StaggeredMenu from './StaggeredMenu';
 import ServiceWallet from './ServiceWallet';
 import InteractiveFolder from './InteractiveFolder';
 import CyberTerminal from './CyberTerminal';
+import FirstPRGuide from './FirstPRGuide';
+import DocAndLicense from './DocAndLicense';
+import CommunityBuilding from './CommunityBuilding';
 
 export type KineticData = {
   id: string;
@@ -65,18 +68,14 @@ export default function KineticModal({ isOpen, onClose, data }: KineticModalProp
           {/* Floating Navigation Pill */}
           <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between w-full max-w-6xl px-8 pointer-events-none">
             <div className="pointer-events-auto">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/4/43/GeeksforGeeks.svg" 
-                alt="GeeksforGeeks Official Logo" 
-                className="h-6"
-              />
+              <img src="/image.png" alt="GDG Official Logo" className="h-8" />
             </div>
             <div className="bg-black rounded-full px-6 py-3 pointer-events-auto flex gap-6 items-center border-2 border-transparent hover:border-black transition-colors">
               <button onClick={onClose} className="font-mono text-white text-xs uppercase tracking-tight hover:text-[#FF4D00] transition-colors flex items-center gap-2">
                 <X size={14} /> Close Section
               </button>
             </div>
-            <div className="font-mono text-sm tracking-tight hidden md:block mix-blend-difference text-white">MASTERCLASS</div>
+            <div className="font-mono text-sm tracking-tight hidden md:block mix-blend-difference text-white">SESSION</div>
           </div>
 
           {/* Typographic Hero Section */}
@@ -143,41 +142,25 @@ export default function KineticModal({ isOpen, onClose, data }: KineticModalProp
           {/* Interactive Service Component */}
           <div ref={deepDiveRef} className="w-full bg-black text-white relative overflow-hidden py-24 px-4 md:px-8">
              <div className="w-full max-w-7xl mx-auto flex flex-col items-center">
-               <h2 className="font-archivo text-5xl md:text-7xl uppercase mb-16 text-center" style={{ color: data.themeColor }}>Deep Dive</h2>
                
-               {data.id === 'docs' ? (
-                 <div className="flex flex-wrap justify-center gap-16 md:gap-24 mt-12 w-full max-w-5xl">
-                   {data.services.map((service, idx) => (
-                     <div key={idx} className="flex flex-col items-center gap-8 group w-full md:w-auto">
-                        <div className="border-8 border-black p-8 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-2 transition-transform duration-300">
-                          <InteractiveFolder 
-                            size={1.5} 
-                            color="#000000" 
-                            label={service.title}
-                            items={[
-                              <div key="1" className="text-black font-mono text-[8px] font-bold">INFO</div>,
-                              <div key="2" className="text-black font-mono text-[8px] font-bold">DOCS</div>
-                            ]}
-                          />
-                        </div>
-                        <div className="text-center">
-                          <h3 className="font-archivo text-2xl uppercase mb-3" style={{ color: data.themeColor }}>{service.title}</h3>
-                          <p className="font-mono text-sm text-white/80 max-w-xs">{service.description}</p>
-                        </div>
-                     </div>
-                   ))}
-                 </div>
+               {data.id === 'github' ? (
+                 <FirstPRGuide themeColor={data.themeColor} />
+               ) : data.id === 'docs' ? (
+                 <DocAndLicense themeColor={data.themeColor} />
                ) : data.id === 'community' ? (
-                 <CyberTerminal 
+                 <CommunityBuilding 
                    services={data.services}
                    themeColor={data.themeColor}
                  />
                ) : (
-                 <ServiceWallet 
-                   walletImage={walletImage}
-                   services={data.services}
-                   themeColor={data.themeColor}
-                 />
+                 <>
+                   <h2 className="font-archivo text-5xl md:text-7xl uppercase mb-16 text-center" style={{ color: data.themeColor }}>Deep Dive</h2>
+                   <ServiceWallet 
+                     walletImage={walletImage}
+                     services={data.services}
+                     themeColor={data.themeColor}
+                   />
+                 </>
                )}
              </div>
           </div>
@@ -192,12 +175,12 @@ export default function KineticModal({ isOpen, onClose, data }: KineticModalProp
                 onClick={onClose}
                 className="bg-black text-white font-mono uppercase tracking-tight text-xl px-12 py-6 rounded-full hover:scale-110 transition-transform duration-300 flex items-center gap-4 group cursor-pointer"
               >
-                Back to Masterclass <ArrowDown className="group-hover:-translate-y-1 transition-transform" />
+                Back to Session <ArrowDown className="group-hover:-translate-y-1 transition-transform" />
               </button>
             </div>
             
             <footer className="border-t-2 border-black py-8 mt-12 flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-xs uppercase">
-              <div>© 2026 GFG Masterclass</div>
+              <div>© 2026 GDG Session</div>
               <div className="flex gap-8">
                 <a href="#" className="hover:underline">Twitter</a>
                 <a href="#" className="hover:underline">GitHub</a>

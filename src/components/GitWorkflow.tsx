@@ -1,123 +1,78 @@
 "use client";
 
-import { motion } from 'framer-motion';
-import { GitBranch, GitMerge } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GitBranch, GitCommit, GitPullRequest, GitFork, Copy } from 'lucide-react';
+import InteractiveFolder from './InteractiveFolder';
 
-export default function GitWorkflow() {
+export default function GitWorkflow({ themeColor }: { themeColor: string }) {
+  const steps = [
+    { id: 'fork', title: 'FORK', cmd: 'Click Fork on GitHub', icon: <GitFork size={32} /> },
+    { id: 'clone', title: 'CLONE', cmd: 'git clone <url>', icon: <Copy size={32} /> },
+    { id: 'branch', title: 'BRANCH', cmd: 'git checkout -b <name>', icon: <GitBranch size={32} /> },
+    { id: 'commit', title: 'COMMIT', cmd: 'git commit -m "msg"', icon: <GitCommit size={32} /> },
+    { id: 'push', title: 'PUSH', cmd: 'git push origin <name>', icon: <GitPullRequest size={32} /> },
+  ];
+
+  const [activeStep, setActiveStep] = useState<number | null>(null);
+
   return (
-    <div className="strict-bound" style={{ display: 'flex', flexDirection: 'column', gap: '4rem', width: '100%' }}>
-      
-      {/* Title Area */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        style={{ textAlign: 'center', marginBottom: '2rem' }}
-      >
-        <h1 style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>
-          Git & Version Control <span className="text-gradient-accent">Mastery</span>
-        </h1>
-        <p style={{ fontSize: '1.6rem', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto' }}>
-          The foundational mechanics of how decentralized teams build software together without overwriting each other's work.
-        </p>
-      </motion.div>
+    <div className="w-full flex flex-col items-center py-12">
+      {/* Node Map Image Header */}
+      <div className="relative w-full max-w-5xl h-64 md:h-80 mb-20 border-8 border-black shadow-[16px_16px_0px_0px_rgba(255,255,255,1)] overflow-hidden group">
+         <img src="/git-node-map.png" alt="Git Node Map" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" />
+         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center p-8 backdrop-blur-sm">
+           <h3 className="font-archivo text-4xl md:text-6xl uppercase font-black text-white text-center leading-none">
+             The Contribution Timeline
+           </h3>
+           <p className="font-mono text-sm mt-6 font-bold tracking-widest uppercase px-4 py-2 border-2 border-dashed" style={{ borderColor: themeColor, color: themeColor }}>
+             Hover over the timeline nodes below
+           </p>
+         </div>
+      </div>
 
-      {/* Content Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: '3rem' }}>
+      {/* Interactive Timeline Folders */}
+      <div className="flex flex-wrap md:flex-nowrap justify-center gap-12 md:gap-8 relative w-full max-w-6xl mt-8">
+        {/* Timeline connector line */}
+        <div className="hidden md:block absolute top-[40%] left-[5%] right-[5%] h-2 bg-white/20 -translate-y-1/2 z-0" />
         
-        {/* Core Concepts */}
-        <motion.div 
-          layout
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="premium-glass"
-          style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '3rem' }}>
-            <div style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: '30px', boxShadow: 'var(--glass-shadow)' }}>
-              <GitBranch size={40} color="var(--accent-cyan)" />
+        {steps.map((step, idx) => (
+          <div 
+            key={step.id} 
+            className="relative z-10 flex flex-col items-center gap-6 group flex-1"
+            onMouseEnter={() => setActiveStep(idx)}
+            onMouseLeave={() => setActiveStep(null)}
+          >
+            {/* The Node Folder */}
+            <div className="border-8 border-black p-4 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-4 transition-transform duration-300">
+               <InteractiveFolder 
+                  size={1.1}
+                  color={activeStep === idx ? themeColor : '#000000'}
+                  label={step.title}
+                  items={[
+                    <div key="icon" className="text-black flex items-center justify-center w-full h-full">{step.icon}</div>
+                  ]}
+               />
             </div>
-            <h2 style={{ fontSize: '2.5rem' }}>The Distributed Model</h2>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', color: 'var(--text-secondary)' }}>
-            <div>
-              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.5rem', fontSize: '1.3rem' }}>Why Git?</strong> 
-              <p style={{ fontSize: '1.2rem' }}>Before Git, version control was centralized (SVN). If the central server went down, nobody could work. Git is distributed: every developer has a full backup of the entire repository history on their laptop.</p>
-            </div>
-            <div>
-              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.5rem', fontSize: '1.3rem' }}>The Working Tree vs Staging</strong> 
-              <p style={{ fontSize: '1.2rem' }}>Git separates your active work from what you plan to commit. You modify files in the <em>Working Tree</em>, add specific changes to the <em>Staging Area</em> (Index), and only then <em>Commit</em> them to history.</p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* The Commands (Premium Terminal) */}
-        <motion.div 
-          layout
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="premium-glass"
-          style={{ padding: 0, display: 'flex', flexDirection: 'column', background: '#000', borderColor: 'transparent' }}
-        >
-          {/* Mac Terminal Header */}
-          <div style={{ padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#ff5f56' }}></div>
-            <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#ffbd2e' }}></div>
-            <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#27c93f' }}></div>
-            <div style={{ flex: 1, textAlign: 'center', color: '#86868b', fontSize: '1rem', fontFamily: 'var(--font-sans)', fontWeight: 500, marginRight: '64px' }}>
-              bash ~ git
+            
+            {/* Tooltip / Command Info */}
+            <div className="relative h-16 w-full flex justify-center">
+              <AnimatePresence>
+                {activeStep === idx && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-0 bg-black border-4 border-white px-4 py-2 whitespace-nowrap z-50 shadow-2xl"
+                    style={{ borderColor: themeColor }}
+                  >
+                    <p className="font-mono font-bold text-xs md:text-sm" style={{ color: themeColor }}>$ {step.cmd}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
-          <div style={{ padding: '3rem 4rem', display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1 }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem' }}>
-              <span style={{ color: '#2997ff' }}>git clone</span> <span style={{ color: '#fff' }}>&lt;url&gt;</span> <br/>
-              <span style={{ color: '#86868b', fontSize: '1rem', marginTop: '0.5rem', display: 'block' }}>// Downloads the repository to your machine</span>
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem' }}>
-              <span style={{ color: '#2997ff' }}>git checkout -b</span> <span style={{ color: '#fff' }}>feature-branch</span> <br/>
-              <span style={{ color: '#86868b', fontSize: '1rem', marginTop: '0.5rem', display: 'block' }}>// Creates and switches to a safe isolated branch</span>
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem' }}>
-              <span style={{ color: '#2997ff' }}>git add .</span> <br/>
-              <span style={{ color: '#86868b', fontSize: '1rem', marginTop: '0.5rem', display: 'block' }}>// Stages all your modified files</span>
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem' }}>
-              <span style={{ color: '#2997ff' }}>git commit -m</span> <span style={{ color: '#bf5af2' }}>"Fix bug"</span> <br/>
-              <span style={{ color: '#86868b', fontSize: '1rem', marginTop: '0.5rem', display: 'block' }}>// Saves the snapshot to your local history</span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Advanced Concepts */}
-        <motion.div 
-          layout
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="premium-glass"
-          style={{ gridColumn: '1 / -1', display: 'flex', gap: '4rem', alignItems: 'center' }}
-        >
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: '30px', boxShadow: 'var(--glass-shadow)' }}>
-                <GitMerge size={40} color="var(--accent-pink)" />
-              </div>
-              <h2 style={{ fontSize: '3rem' }}>Advanced: Conflicts & Rebasing</h2>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', color: 'var(--text-secondary)' }}>
-              <p style={{ fontSize: '1.25rem' }}>
-                <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.5rem' }}>Merge Conflicts:</strong> Happen when two people edit the exact same line of code. Git stops and forces you to manually choose which edit to keep. Don't panic—it's just a text editing exercise.
-              </p>
-              <p style={{ fontSize: '1.25rem' }}>
-                <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.5rem' }}>Merge vs. Rebase:</strong> 
-                Merging creates a special "merge commit" that ties two histories together. Rebasing rewrites history by picking up your branch and placing it cleanly at the tip of the main branch. 
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
+        ))}
       </div>
     </div>
   );

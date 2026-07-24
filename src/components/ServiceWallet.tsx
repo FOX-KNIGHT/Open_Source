@@ -41,11 +41,11 @@ const ServiceCard = ({
   totalCards: number;
   themeColor: string;
 }) => {
-  // If active, pull it completely out and up, displaying full detail.
+  // If active, pull it out enough to read but not so high it clips the top nav.
   const yOffset = isActive 
-    ? -220 // Active card flies high up out of the wallet
+    ? -240 
     : isHovered 
-      ? -140 + (index * 40) // Hover: Fan out upwards
+      ? -280 + (index * 70) // Hover: Fan out much higher with large 70px gaps so titles are fully readable
       : -10 + (index * 10); // Resting: tucked in
       
   const zIndex = isActive ? 50 : 10 + index;
@@ -72,22 +72,23 @@ const ServiceCard = ({
         damping: 20,
       }}
       className={cn(
-        "absolute left-0 w-full h-[320px] rounded-xl cursor-pointer shadow-2xl overflow-hidden transform-gpu border-4 border-black bg-white flex flex-col"
+        "absolute left-0 w-full rounded-xl cursor-pointer shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden transform-gpu border-4 border-black bg-white flex flex-col",
+        isActive ? "h-[420px]" : "h-[360px]"
       )}
       style={{
         transformOrigin: 'bottom center',
         top: '-45px'
       }}
     >
-      <div className="flex-1 p-5 md:p-6 font-mono overflow-y-auto">
-        <div className="flex justify-between items-start mb-4 border-b-4 border-black pb-4">
-           <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-none text-black" style={{ color: themeColor === '#ffffff' ? '#000000' : themeColor }}>
+      <div className="flex-1 p-6 md:p-8 font-mono overflow-y-auto scrollbar-width-none [&::-webkit-scrollbar]:hidden flex flex-col">
+        <div className="flex justify-between items-start mb-6 border-b-4 border-black pb-4">
+           <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.85] text-black" style={{ color: themeColor === '#ffffff' ? '#000000' : themeColor }}>
              {data.title}
            </h3>
            <span className="text-2xl md:text-4xl font-black opacity-20 text-black">{(index + 1).toString().padStart(2, '0')}</span>
         </div>
         
-        <p className="text-xs md:text-sm font-bold mb-4 text-black">
+        <p className="text-sm md:text-base font-bold mb-6 text-black leading-snug">
           {data.description}
         </p>
 
@@ -95,15 +96,15 @@ const ServiceCard = ({
           <motion.div 
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            className="text-[10px] md:text-xs font-sans leading-relaxed border-l-4 border-black pl-3 text-black/80"
+            className="text-xs md:text-sm font-sans leading-relaxed border-l-4 border-black pl-4 text-black/80 flex-1"
           >
             {data.detailedContent}
           </motion.div>
         )}
 
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t-2 border-dashed border-black/20">
           {data.tags.map((tag, tIdx) => (
-            <span key={tIdx} className="px-2 py-1 border-2 border-black font-mono text-[9px] md:text-[10px] uppercase font-bold text-black" style={{ backgroundColor: themeColor === '#ffffff' ? '#e5e7eb' : themeColor }}>
+            <span key={tIdx} className="px-3 py-1 border-2 border-black font-mono text-[10px] md:text-xs uppercase font-black text-black" style={{ backgroundColor: themeColor === '#ffffff' ? '#e5e7eb' : themeColor }}>
               {tag}
             </span>
           ))}
@@ -123,13 +124,13 @@ export function ServiceWallet({ walletImage, services, themeColor, className }: 
 
   return (
     <div 
-      className={cn("relative w-full min-h-[600px] flex flex-col items-center justify-center overflow-visible", className)}
+      className={cn("relative w-full min-h-[750px] flex flex-col items-center justify-center overflow-visible", className)}
       onClick={handleBackgroundClick}
     >
-      <div className="relative z-10 flex flex-col items-center w-full max-w-lg perspective-1000 pt-32">
+      <div className="relative z-10 flex flex-col items-center w-full max-w-3xl perspective-1000 pt-64">
         
         <div 
-          className="relative w-80 h-56 md:w-[28rem] md:h-72"
+          className="relative w-80 h-56 md:w-[40rem] md:h-80"
           onMouseEnter={() => setIsWalletHovered(true)}
           onMouseLeave={() => setIsWalletHovered(false)}
         >

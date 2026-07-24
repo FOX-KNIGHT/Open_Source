@@ -51,7 +51,7 @@ export default function CyberTerminal({ services, themeColor }: CyberTerminalPro
           <div className="flex items-center gap-3">
             <Terminal size={20} style={{ color: terminalAccent }} />
             <span className="text-sm tracking-widest font-bold uppercase" style={{ color: terminalAccent }}>
-              GFG_OS_TERMINAL_v2.0
+              GDG_OS_TERMINAL_v2.0
             </span>
           </div>
           <div className="flex gap-2">

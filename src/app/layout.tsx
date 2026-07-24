@@ -20,7 +20,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Open Source Ecosystem | GFG',
+  title: 'Open Source Ecosystem | GDG',
   description: 'Interactive session on Git, GitHub, Documentation, and Community Building',
 };
 

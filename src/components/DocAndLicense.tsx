@@ -1,120 +1,128 @@
 "use client";
 
-import { motion } from 'framer-motion';
-import { FileText, Shield, Gavel } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckSquare, ShieldAlert, ShieldCheck, Scale } from 'lucide-react';
 
-export default function DocAndLicense() {
+export default function DocAndLicense({ themeColor }: { themeColor: string }) {
+  const [activeLicense, setActiveLicense] = useState<number | null>(null);
+
+  const licenses = [
+    {
+      id: 'mit',
+      name: 'MIT License',
+      icon: <ShieldCheck size={48} />,
+      desc: 'A short and simple permissive license with conditions only requiring preservation of copyright and license notices.',
+      permissions: ['Commercial use', 'Modification', 'Distribution', 'Private use'],
+      limitations: ['Liability', 'Warranty'],
+      conditions: ['License and copyright notice']
+    },
+    {
+      id: 'apache',
+      name: 'Apache 2.0',
+      icon: <Scale size={48} />,
+      desc: 'A permissive license whose main conditions require preservation of copyright and license notices, and provides an express grant of patent rights.',
+      permissions: ['Commercial use', 'Modification', 'Distribution', 'Patent use', 'Private use'],
+      limitations: ['Trademark use', 'Liability', 'Warranty'],
+      conditions: ['License and copyright notice', 'State changes']
+    },
+    {
+      id: 'gpl',
+      name: 'GNU GPLv3',
+      icon: <ShieldAlert size={48} />,
+      desc: 'A strong copyleft license conditioned on making available complete source code of licensed works and modifications.',
+      permissions: ['Commercial use', 'Modification', 'Distribution', 'Patent use', 'Private use'],
+      limitations: ['Liability', 'Warranty'],
+      conditions: ['License and copyright notice', 'State changes', 'Disclose source', 'Same license']
+    }
+  ];
+
+  const readmeItems = [
+    { title: 'Project Title & Description', desc: 'Clear name and a 1-2 sentence pitch.' },
+    { title: 'Badges', desc: 'Status, license, build passing, etc.' },
+    { title: 'Table of Contents', desc: 'For longer documents.' },
+    { title: 'Installation', desc: 'Step-by-step setup instructions.' },
+    { title: 'Usage', desc: 'Examples of how to use the project.' },
+    { title: 'Contributing', desc: 'How others can help.' },
+    { title: 'License', desc: 'Link to the full license text.' }
+  ];
+
   return (
-    <div className="strict-bound" style={{ display: 'flex', flexDirection: 'column', gap: '4rem', width: '100%' }}>
+    <div className="w-full flex flex-col items-center py-12 px-4 md:px-8">
       
-      {/* Title Area */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        style={{ textAlign: 'center', marginBottom: '2rem' }}
-      >
-        <h1 style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>
-          Docs, Licenses & <span className="text-gradient">Governance</span>
-        </h1>
-        <p style={{ fontSize: '1.6rem', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto' }}>
-          Code without a license is legally unusable. Code without docs is practically unusable.
-        </p>
-      </motion.div>
-
-      {/* Content Layout */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+      {/* Licenses Section */}
+      <div className="w-full max-w-6xl mb-32">
+        <h3 className="w-full text-center font-archivo text-5xl md:text-7xl uppercase mb-12 font-black" style={{ color: themeColor }}>Choose a License</h3>
         
-        {/* Documentation Essentials */}
-        <motion.div 
-          layout
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="premium-glass"
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '3rem' }}>
-            <div style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: '30px', boxShadow: 'var(--glass-shadow)' }}>
-              <FileText size={40} color="var(--text-primary)" />
-            </div>
-            <h2 style={{ fontSize: '3rem' }}>The Holy Trinity of Documentation</h2>
-          </div>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3rem', color: 'var(--text-secondary)' }}>
-            <div>
-              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '1rem', fontSize: '1.4rem' }}>README.md</strong>
-              <p style={{ fontSize: '1.15rem' }}>The front page of your project. It must answer: What is this? Why should I use it? How do I install it in 3 steps?</p>
-            </div>
-            <div>
-              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '1rem', fontSize: '1.4rem' }}>CONTRIBUTING.md</strong>
-              <p style={{ fontSize: '1.15rem' }}>The onboarding manual. It tells developers how to run the app locally, how to run tests, and the code style guidelines.</p>
-            </div>
-            <div>
-              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '1rem', fontSize: '1.4rem' }}>CODE_OF_CONDUCT.md</strong>
-              <p style={{ fontSize: '1.15rem' }}>The rules of engagement. Establishing what behavior is unacceptable and how harassment will be handled.</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
-          {/* Licensing */}
-          <motion.div 
-            layout
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="premium-glass"
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: '30px', boxShadow: 'var(--glass-shadow)' }}>
-                <Shield size={40} color="var(--accent-cyan)" />
-              </div>
-              <h2 style={{ fontSize: '2.5rem' }}>Licensing</h2>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', color: 'var(--text-secondary)', fontSize: '1.25rem' }}>
-              <p>
-                By default, copyright law protects your code. If you don't add an Open Source license, no one is legally allowed to use, modify, or distribute your code.
-              </p>
-              <p>
-                <strong style={{ color: 'var(--accent-cyan)' }}>Permissive (MIT):</strong> "Do whatever you want, just don't sue me." Popular in the web ecosystem.
-              </p>
-              <p>
-                <strong style={{ color: 'var(--accent-indigo)' }}>Copyleft (GPL):</strong> "If you modify this code, your new software MUST also be open source." Used by Linux.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Governance */}
-          <motion.div 
-            layout
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-            className="premium-glass"
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div style={{ padding: '1.5rem', background: 'var(--bg-primary)', borderRadius: '30px', boxShadow: 'var(--glass-shadow)' }}>
-                <Gavel size={40} color="var(--accent-pink)" />
-              </div>
-              <h2 style={{ fontSize: '2.5rem' }}>Governance</h2>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', color: 'var(--text-secondary)', fontSize: '1.25rem' }}>
-              <p>
-                Who decides what gets merged? Who has the final say?
-              </p>
-              <div>
-                <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.5rem' }}>BDFL:</strong> 
-                Benevolent Dictator for Life. One person has absolute authority (e.g., Linus Torvalds).
-              </div>
-              <div>
-                <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.5rem' }}>Meritocracy:</strong> 
-                Decisions are made by a steering committee. The more you contribute, the more voting power you earn.
-              </div>
-            </div>
-          </motion.div>
+        <div className="flex flex-col md:flex-row justify-center gap-8">
+          {licenses.map((lic, idx) => (
+             <motion.div 
+               layout
+               key={idx} 
+               onClick={() => setActiveLicense(activeLicense === idx ? null : idx)}
+               className={`border-8 border-black p-8 cursor-pointer flex-1 transition-colors duration-300 ${activeLicense === idx ? 'bg-[#222]' : 'bg-[#111] hover:bg-[#1a1a1a]'}`}
+               style={{ boxShadow: `8px 8px 0px 0px ${themeColor}` }}
+             >
+               <motion.div layout className="flex flex-col items-center text-center">
+                 <div className="mb-6" style={{ color: themeColor }}>{lic.icon}</div>
+                 <h4 className="font-archivo text-3xl md:text-4xl uppercase text-white mb-4 font-black">{lic.name}</h4>
+                 <p className="font-mono text-sm text-white/80 font-bold mb-4">{lic.desc}</p>
+                 
+                 <AnimatePresence>
+                   {activeLicense === idx && (
+                     <motion.div 
+                       initial={{ opacity: 0, height: 0 }}
+                       animate={{ opacity: 1, height: 'auto' }}
+                       exit={{ opacity: 0, height: 0 }}
+                       className="w-full mt-8 text-left flex flex-col gap-6 border-t-4 pt-6 border-white/10"
+                     >
+                        <div>
+                          <h5 className="font-bold text-green-400 uppercase tracking-widest mb-3 text-sm">Permissions</h5>
+                          <ul className="flex flex-wrap gap-2">
+                            {lic.permissions.map((p, i) => <li key={i} className="text-xs font-mono font-bold bg-green-900/40 text-green-300 px-3 py-1 border border-green-500/30">{p}</li>)}
+                          </ul>
+                        </div>
+                        <div>
+                          <h5 className="font-bold text-red-400 uppercase tracking-widest mb-3 text-sm">Limitations</h5>
+                          <ul className="flex flex-wrap gap-2">
+                            {lic.limitations.map((p, i) => <li key={i} className="text-xs font-mono font-bold bg-red-900/40 text-red-300 px-3 py-1 border border-red-500/30">{p}</li>)}
+                          </ul>
+                        </div>
+                        <div>
+                          <h5 className="font-bold text-blue-400 uppercase tracking-widest mb-3 text-sm">Conditions</h5>
+                          <ul className="flex flex-wrap gap-2">
+                            {lic.conditions.map((p, i) => <li key={i} className="text-xs font-mono font-bold bg-blue-900/40 text-blue-300 px-3 py-1 border border-blue-500/30">{p}</li>)}
+                          </ul>
+                        </div>
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
+               </motion.div>
+             </motion.div>
+          ))}
         </div>
-
       </div>
+
+      {/* README Checklist Section */}
+      <div className="w-full max-w-4xl relative z-10">
+        <h3 className="w-full text-center font-archivo text-5xl md:text-7xl uppercase mb-12 font-black" style={{ color: themeColor }}>Perfect README</h3>
+        <div className="bg-white border-8 border-black p-8 md:p-16" style={{ boxShadow: `16px 16px 0px 0px ${themeColor}` }}>
+           <div className="flex flex-col gap-8">
+             {readmeItems.map((item, idx) => (
+               <div key={idx} className="flex items-start gap-6 group hover:-translate-y-2 transition-transform duration-300 cursor-default">
+                 <div className="mt-1">
+                   <CheckSquare size={36} className="text-black opacity-20 group-hover:opacity-100 transition-opacity" style={{ color: themeColor === '#ffffff' ? '#000' : themeColor }} />
+                 </div>
+                 <div className="flex flex-col border-b-4 border-black/10 pb-4 w-full group-hover:border-black/30 transition-colors">
+                   <h4 className="font-archivo text-2xl md:text-3xl uppercase font-black text-black">{item.title}</h4>
+                   <p className="font-mono text-black/70 font-bold text-sm md:text-base mt-2">{item.desc}</p>
+                 </div>
+               </div>
+             ))}
+           </div>
+        </div>
+      </div>
+      
     </div>
   );
 }

@@ -20,6 +20,8 @@ export interface FolderProps {
   className?: string;
   /** Title or label to display on the folder */
   label?: string;
+  /** Optional controlled state for whether the folder is open */
+  isOpen?: boolean;
 }
 
 const darkenColor = (hex: string, percent: number): string => {
@@ -42,11 +44,21 @@ export function InteractiveFolder({
   size = 1, 
   items = [], 
   className = '',
-  label
+  label,
+  isOpen: controlledIsOpen
 }: FolderProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const isControlled = controlledIsOpen !== undefined;
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+
+  const handleToggle = () => {
+    if (!isControlled) {
+      setInternalIsOpen(!internalIsOpen);
+    }
+  };
 
   const maxVisibleItems = 3;
   const displayItems = items.slice(0, maxVisibleItems);
@@ -104,15 +116,15 @@ export function InteractiveFolder({
       style={{ transform: `scale(${size})`, width: 120, height: 100 }}
     >
       <div
-        className="relative cursor-pointer group select-none"
-        onClick={() => setIsOpen(!isOpen)}
+        className={`relative ${!isControlled ? 'cursor-pointer' : ''} group select-none`}
+        onClick={handleToggle}
       >
         {/* Folder Back */}
         <div
-          className="relative w-[110px] h-[85px] transition-all duration-500 rounded-tr-[12px] rounded-br-[12px] rounded-bl-[12px]"
+          className="relative w-[110px] h-[85px] transition-all duration-500 rounded-tr-[12px] rounded-br-[12px] rounded-bl-[12px] border-[3px] border-black"
           style={{ 
             backgroundColor: folderBackColor,
-            boxShadow: isOpen ? '0 10px 30px -5px rgba(0,0,0,0.1)' : '0 4px 12px -2px rgba(0,0,0,0.05)'
+            boxShadow: isOpen ? '0 10px 30px -5px rgba(0,0,0,0.2)' : '4px 4px 0px 0px rgba(0,0,0,1)'
           }}
         >
           {/* Tab */}
@@ -141,8 +153,8 @@ export function InteractiveFolder({
                 borderRadius: '8px',
                 width: i === 0 ? '75px' : i === 1 ? '85px' : '95px',
                 height: i === 0 ? '65px' : i === 1 ? '70px' : '75px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                border: '1px solid rgba(0,0,0,0.03)'
+                boxShadow: '2px 2px 0px 0px rgba(0,0,0,1)',
+                border: '2px solid black'
               }}
             >
               {item || (

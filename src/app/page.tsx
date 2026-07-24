@@ -7,19 +7,66 @@ import GitWorkflow from '@/components/GitWorkflow';
 import GitHubEcosystem from '@/components/GitHubEcosystem';
 import DocAndLicense from '@/components/DocAndLicense';
 import CommunityBuilding from '@/components/CommunityBuilding';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import KineticModal, { KineticData } from '@/components/KineticModal';
 import ExplodedView from '@/components/ExplodedView';
+import QuizSection from '@/components/QuizSection';
+import OpenSourceEconomics from '@/components/OpenSourceEconomics';
 import ResourcesSection from '@/components/ResourcesSection';
 
 export default function Home() {
   const [selectedDeepDive, setSelectedDeepDive] = useState<KineticData | null>(null);
-  
-  const deepDiveRef = useRef(null);
-  const isDeepDiveInView = useInView(deepDiveRef, { margin: "0px 0px -80% 0px" });
+  const [isLightBg, setIsLightBg] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+    const checkBg = () => {
+      // The header text is located around x: 150, y: 50
+      const el = document.elementFromPoint(150, 50);
+      if (el) {
+        let current: Element | null = el;
+        let bg = 'rgba(0, 0, 0, 0)';
+        
+        while (current && current !== document.body) {
+          const style = window.getComputedStyle(current);
+          if (style.backgroundColor && style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent') {
+            bg = style.backgroundColor;
+            break;
+          }
+          current = current.parentElement;
+        }
+        
+        const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (match) {
+          const r = parseInt(match[1]);
+          const g = parseInt(match[2]);
+          const b = parseInt(match[3]);
+          const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+          setIsLightBg(yiq >= 128);
+        }
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(checkBg);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    setTimeout(checkBg, 100); 
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
 
   const galleryItems = [
     "Git Mastery",
@@ -160,22 +207,22 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white relative">
-      {/* Global Floating Header (Logo) */}
-      <div className="fixed top-0 left-0 p-8 z-50 pointer-events-none flex items-center">
+      {/* Global Floating Header */}
+      <div className={`fixed top-0 left-0 right-0 p-8 z-50 pointer-events-none flex items-center gap-6 transition-colors duration-300 ${isLightBg ? 'text-black' : 'text-white'}`}>
         <div className="pointer-events-auto">
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/4/43/GeeksforGeeks.svg" 
-            alt="GeeksforGeeks Official Logo" 
-            className="h-6 md:h-8"
-          />
+          <img src="/image.png" alt="GDG Official Logo" className="h-8 md:h-10" />
         </div>
-      </div>
-
-      {/* Global Floating Header (Text) */}
-      <div className={`fixed top-0 left-0 right-0 p-8 z-50 pointer-events-none flex items-center transition-colors duration-300 ${isDeepDiveInView ? 'text-black' : 'mix-blend-difference text-white'}`}>
-        <div className="ml-[80px] md:ml-[100px] flex flex-col uppercase tracking-widest text-sm font-bold">
-          <span>Open Source</span>
-          <span>Masterclass</span>
+        <div className="font-mono font-bold leading-tight hidden sm:block">
+          <div>OPEN SOURCE &</div>
+          <div className="relative inline-block">
+            <div>GIT WORKFLOW</div>
+            <div className="absolute -bottom-1 left-0 right-0 h-[3px] flex">
+              <div className="flex-1 bg-[#4285F4]"></div>
+              <div className="flex-1 bg-[#EA4335]"></div>
+              <div className="flex-1 bg-[#FBBC05]"></div>
+              <div className="flex-1 bg-[#34A853]"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -194,17 +241,16 @@ export default function Home() {
         onSelect={setSelectedDeepDive} 
       />
 
+      <QuizSection />
+      <OpenSourceEconomics />
+
       {/* 5. Masterclass Resources */}
       <ResourcesSection />
 
       {/* Footer to give some scrolling space */}
       <footer className="border-t-4 border-black mt-20 p-8 flex flex-col items-center justify-center gap-4 font-bold uppercase tracking-widest text-xl">
-        <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/4/43/GeeksforGeeks.svg" 
-          alt="GeeksforGeeks Official Logo" 
-          className="h-8"
-        />
-        <span>END OF MASTERCLASS</span>
+        <img src="/image.png" alt="GDG Official Logo" className="h-10" />
+        <span>END OF SESSION</span>
       </footer>
 
       {/* Kinetic Modal Overlay */}
